@@ -1,0 +1,19 @@
+{
+  "name": "workshops",
+  "version": "1.0.0",
+  "main": "index.js",
+  "dependencies": {
+    "@babel/core": "^7.18.6",
+    "prettier": "^2.7.1",
+    "reselect": "^4.1.6"
+  },
+  "devDependencies": {
+    "@babel/plugin-syntax-destructuring-private": "^7.18.6",
+    "@babel/preset-env": "^7.18.6"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "rukivbruki",
+  "license": "ISC"
+}
