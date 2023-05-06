@@ -1,5 +1,4 @@
 # Serverless Applications with AWS Lambda
-https://www.notion.so/rukivbruki/Serverless-Applications-with-AWS-Lambda-389c2cff4c664090bc5b8037e2d8842b?pvs=4
 
 **Prerequisites:** `aws CLI`, `python + pip`, `node.js + npm`, `docker`
 
@@ -60,7 +59,6 @@ sam logs -n HelloWorldFunction --stack-name sam-test --filter ERROR -s '1 month 
 ```
 
 ```bash
-View the live logs for the "HelloWorldFunction" in the "sam-test" CloudFormation stack in the us-east-1 region
 sam logs -n HelloWorldFunction --stack-name sam-test --tail --region us-east-1
 ```
 
@@ -75,3 +73,23 @@ sam local invoke HelloWorldFunction --event events/event.json
 ```bash
 cfn-init template.yaml
 ```
+
+```bash
+aws cloudformation list-stack-resources --stack-name sam-test --region us-east-1
+```
+
+```bash
+aws lambda get-function-configuration --function-name sam-test-HelloWorldFunction-CKSVo1KCAGCk --region us-east-1
+```
+
+```bash
+aws lambda list-versions-by-function --function-name sam-test-HelloWorldFunction-CKSVo1KCAGCk --region us-east-1
+```
+
+`sam-test-1-HelloWorldFunction-QL5VEY42DZ2C:1`
+
+```bash
+aws lambda invoke --function-name sam-test-HelloWorldFunction-CKSVo1KCAGCk:1 result.txt --region us-east-1
+```
+
+[Deploying serverless applications gradually - AWS Serverless Application Model](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/automating-updates-to-serverless-apps.html)

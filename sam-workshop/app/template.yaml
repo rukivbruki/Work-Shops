@@ -21,23 +21,47 @@ Resources:
       CodeUri: hello-world/
       Handler: app.lambdaHandler
       Runtime: nodejs16.x
+      AutoPublishAlias: live
+      DeploymentPreference:
+        Type: Linear10PercentEvery1Minute
+        Alarms:
+          - !Ref HelloWorldErrors
       Architectures:
-      - x86_64
+        - x86_64
       Events:
         HelloWorld:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
             Path: /hello
             Method: get
+#        SubmitForm:
+#          Type: Api
+#          Properties:
+#            Path: /hello
+#            Method: post
+  HelloWorldErrors:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      MetricName: Errors
+      Statistic: Sum
+      ComparisonOperator: GreaterThanThreshold
+      Threshold: 5
+      Period: 60
+      EvaluationPeriods: 1
+      TreatMissingData: notBreaching
+      Namespace: "AWS/Lambda"
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref HelloWorldFunction
 
   ApplicationResourceGroup:
     Type: AWS::ResourceGroups::Group
     Properties:
       Name:
         Fn::Join:
-        - ''
-        - - ApplicationInsights-SAM-
-          - Ref: AWS::StackName
+          - ''
+          - - ApplicationInsights-SAM-
+            - Ref: AWS::StackName
       ResourceQuery:
         Type: CLOUDFORMATION_STACK_1_0
   ApplicationInsightsMonitoring:
@@ -45,9 +69,9 @@ Resources:
     Properties:
       ResourceGroupName:
         Fn::Join:
-        - ''
-        - - ApplicationInsights-SAM-
-          - Ref: AWS::StackName
+          - ''
+          - - ApplicationInsights-SAM-
+            - Ref: AWS::StackName
       AutoConfigurationEnabled: 'true'
     DependsOn: ApplicationResourceGroup
 Outputs:
@@ -56,7 +80,7 @@ Outputs:
   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
   HelloWorldApi:
     Description: API Gateway endpoint URL for Prod stage for Hello World function
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
+    Value: !Sub 'https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/'
   HelloWorldFunction:
     Description: Hello World Lambda Function ARN
     Value: !GetAtt HelloWorldFunction.Arn

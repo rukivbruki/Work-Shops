@@ -16,9 +16,14 @@ Resources:
   HelloWorldFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://sam-bucket-tf-workshop/89e187fc52db746cda83047b7b1cace1
+      CodeUri: s3://sam-bucket-tf-workshop/65f155a164488b1c91197035f2ad784d
       Handler: app.lambdaHandler
       Runtime: nodejs16.x
+      AutoPublishAlias: live
+      DeploymentPreference:
+        Type: Linear10PercentEvery1Minute
+        Alarms:
+        - Ref: HelloWorldErrors
       Architectures:
       - x86_64
       Events:
@@ -29,6 +34,23 @@ Resources:
             Method: get
     Metadata:
       SamResourceId: HelloWorldFunction
+  HelloWorldErrors:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      MetricName: Errors
+      Statistic: Sum
+      ComparisonOperator: GreaterThanThreshold
+      Threshold: 5
+      Period: 60
+      EvaluationPeriods: 1
+      TreatMissingData: notBreaching
+      Namespace: AWS/Lambda
+      Dimensions:
+      - Name: FunctionName
+        Value:
+          Ref: HelloWorldFunction
+    Metadata:
+      SamResourceId: HelloWorldErrors
   ApplicationResourceGroup:
     Type: AWS::ResourceGroups::Group
     Properties:
